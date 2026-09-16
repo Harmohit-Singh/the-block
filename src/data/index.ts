@@ -54,6 +54,7 @@ export {
   FACET_FILTER_KEYS,
   SORT_KEYS,
   SORT_LABELS,
+  countActiveFilters,
   createQuery,
   getFilterBounds,
   isFilterActive,

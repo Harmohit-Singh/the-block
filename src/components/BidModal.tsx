@@ -1,5 +1,6 @@
-import { useEffect, useRef } from "react";
+import { useRef } from "react";
 import { useVehicle } from "../data";
+import { useDismissibleOverlay } from "../hooks/useDismissibleOverlay";
 import { BidPanel } from "./BidPanel";
 import { CloseIcon } from "./icons";
 
@@ -13,23 +14,7 @@ export function BidModal({
   const vehicle = useVehicle(vehicleId);
   const closeButtonRef = useRef<HTMLButtonElement>(null);
 
-  useEffect(() => {
-    const previousOverflow = document.body.style.overflow;
-    const previouslyFocused = document.activeElement as HTMLElement | null;
-    const onKeyDown = (event: KeyboardEvent) => {
-      if (event.key === "Escape") onClose();
-    };
-
-    document.body.style.overflow = "hidden";
-    document.addEventListener("keydown", onKeyDown);
-    closeButtonRef.current?.focus();
-
-    return () => {
-      document.body.style.overflow = previousOverflow;
-      document.removeEventListener("keydown", onKeyDown);
-      previouslyFocused?.focus();
-    };
-  }, [onClose]);
+  useDismissibleOverlay(onClose, closeButtonRef);
 
   if (!vehicle) return null;
 

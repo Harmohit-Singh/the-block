@@ -101,7 +101,7 @@ describe("useInventory", () => {
 
     expect(result.current.bounds.priceMin).toBeGreaterThan(0);
     expect(result.current.bounds.priceMax).toBeGreaterThan(result.current.bounds.priceMin);
-    expect(result.current.bounds.yearMax).toBeGreaterThanOrEqual(result.current.bounds.yearMin);
+    expect(result.current.bounds.odometerMax).toBeGreaterThan(0);
   });
 });
 

@@ -49,8 +49,6 @@ export interface VehicleFilters {
   titleStatuses: TitleStatus[];
   provinces: string[];
   statuses: AuctionStatus[];
-  yearMin: number | null;
-  yearMax: number | null;
   priceMin: number | null;
   priceMax: number | null;
   odometerMax: number | null;
@@ -77,8 +75,6 @@ export const DEFAULT_FILTERS: VehicleFilters = {
   titleStatuses: [],
   provinces: [],
   statuses: [],
-  yearMin: null,
-  yearMax: null,
   priceMin: null,
   priceMax: null,
   odometerMax: null,
@@ -164,9 +160,6 @@ function buildPredicates(
     province: (v) => includesIfAny(filters.provinces, v.province),
     status: (v) => includesIfAny(filters.statuses, v.status),
 
-    year: (v) =>
-      (filters.yearMin === null || v.year >= filters.yearMin) &&
-      (filters.yearMax === null || v.year <= filters.yearMax),
     price: (v) =>
       (filters.priceMin === null || v.effectivePrice >= filters.priceMin) &&
       (filters.priceMax === null || v.effectivePrice <= filters.priceMax),
@@ -347,45 +340,42 @@ export function searchVehicles(
 export interface FilterBounds {
   priceMin: number;
   priceMax: number;
-  yearMin: number;
-  yearMax: number;
   odometerMax: number;
 }
 
 /** Range-slider endpoints, derived from the data rather than hard-coded. */
 export function getFilterBounds(vehicles: readonly Vehicle[]): FilterBounds {
   if (vehicles.length === 0) {
-    return { priceMin: 0, priceMax: 0, yearMin: 0, yearMax: 0, odometerMax: 0 };
+    return { priceMin: 0, priceMax: 0, odometerMax: 0 };
   }
 
   return vehicles.reduce<FilterBounds>(
     (bounds, vehicle) => ({
       priceMin: Math.min(bounds.priceMin, vehicle.effectivePrice),
       priceMax: Math.max(bounds.priceMax, vehicle.effectivePrice),
-      yearMin: Math.min(bounds.yearMin, vehicle.year),
-      yearMax: Math.max(bounds.yearMax, vehicle.year),
       odometerMax: Math.max(bounds.odometerMax, vehicle.odometerKm),
     }),
     {
       priceMin: Number.POSITIVE_INFINITY,
       priceMax: 0,
-      yearMin: Number.POSITIVE_INFINITY,
-      yearMax: 0,
       odometerMax: 0,
     },
   );
 }
 
-/** Whether anything is narrowing the inventory, for an "clear all" affordance. */
-export function isFilterActive(query: Query): boolean {
-  return (Object.keys(DEFAULT_FILTERS) as Array<keyof VehicleFilters>).some(
-    (key) => {
+/** Number of individual constraints narrowing the inventory. */
+export function countActiveFilters(query: Query): number {
+  return (Object.keys(DEFAULT_FILTERS) as Array<keyof VehicleFilters>).reduce(
+    (count, key) => {
       const current = query.filters[key];
-      const fallback = DEFAULT_FILTERS[key];
-      if (Array.isArray(current) && Array.isArray(fallback)) {
-        return current.length > 0;
-      }
-      return current !== fallback;
+      if (Array.isArray(current)) return count + current.length;
+      return count + Number(current !== DEFAULT_FILTERS[key]);
     },
+    0,
   );
+}
+
+/** Whether anything is narrowing the inventory, for a "clear all" affordance. */
+export function isFilterActive(query: Query): boolean {
+  return countActiveFilters(query) > 0;
 }

@@ -7,6 +7,7 @@ import {
   ReserveBadge,
   TitleStatusBadge,
 } from "./AuctionStatus";
+import { BidPriceLabel } from "./BidPriceLabel";
 import { ConditionGrade } from "./ConditionGrade";
 import { VehicleImage } from "./VehicleImage";
 import { GaugeIcon, MapPinIcon } from "./icons";
@@ -28,10 +29,7 @@ export function VehicleCard({
   eagerImage?: boolean;
   onBid: () => void;
 }) {
-  const hasBids = vehicle.currentBid !== null;
   const userBids = useBidHistory(vehicle.id);
-  const isUsersCurrentBid =
-    hasBids && userBids.some((bid) => bid.amount === vehicle.currentBid);
 
   return (
     <li className="card">
@@ -80,20 +78,7 @@ export function VehicleCard({
               {/* A lot with no bids is quoting an asking price, not a market
                   price. Labelling them differently keeps that honest. */}
               <span className="card__price-label">
-                {hasBids ? (
-                  <>
-                    Current bid ·{" "}
-                    <span
-                      className={
-                        isUsersCurrentBid ? "bid-owner bid-owner--yours" : "bid-owner"
-                      }
-                    >
-                      {isUsersCurrentBid ? "Yours" : "Another bidder"}
-                    </span>
-                  </>
-                ) : (
-                  "Starting bid"
-                )}
+                <BidPriceLabel vehicle={vehicle} userBids={userBids} />
               </span>
               <span className="card__price-value numeric">
                 {formatCurrency(vehicle.effectivePrice)}

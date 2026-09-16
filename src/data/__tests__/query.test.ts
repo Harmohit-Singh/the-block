@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import {
+  countActiveFilters,
   createQuery,
   getFilterBounds,
   isFilterActive,
@@ -92,9 +93,8 @@ describe("filters", () => {
     expect(ids(search({ filters: { gradeMin: 3.5 } })).sort()).toEqual(["bronco", "civic"]);
   });
 
-  it("filters by odometer ceiling and year range", () => {
+  it("filters by odometer ceiling", () => {
     expect(ids(search({ filters: { odometerMax: 50_000 } }))).toEqual(["bronco"]);
-    expect(ids(search({ filters: { yearMin: 2021, yearMax: 2022 } }))).toEqual(["ram"]);
   });
 
   it("filters to lots that offer Buy Now", () => {
@@ -286,8 +286,6 @@ describe("getFilterBounds", () => {
     expect(getFilterBounds(FLEET)).toEqual({
       priceMin: 8_000,
       priceMax: 44_000,
-      yearMin: 2019,
-      yearMax: 2023,
       odometerMax: 120_000,
     });
   });
@@ -307,5 +305,19 @@ describe("isFilterActive", () => {
 
   it("ignores sort and paging, which do not narrow the inventory", () => {
     expect(isFilterActive(createQuery({ sort: "price-asc", page: 3 }))).toBe(false);
+  });
+});
+
+describe("countActiveFilters", () => {
+  it("counts selected values and scalar constraints", () => {
+    const query = createQuery({
+      filters: {
+        makes: ["Ford", "Honda"],
+        priceMax: 20_000,
+        buyNowOnly: true,
+      },
+    });
+
+    expect(countActiveFilters(query)).toBe(4);
   });
 });

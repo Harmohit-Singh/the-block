@@ -8,6 +8,7 @@ import {
 } from "../data";
 import { formatCurrency } from "../lib/format";
 import { AuctionCountdown, ReserveBadge } from "./AuctionStatus";
+import { BidPriceLabel } from "./BidPriceLabel";
 
 type BidMode = "one-off" | "max";
 
@@ -60,28 +61,11 @@ export function BidPanel({ vehicle }: { vehicle: Vehicle }) {
     }
   };
 
-  const hasBids = vehicle.currentBid !== null;
-  const isUsersCurrentBid =
-    hasBids && history.some((bid) => bid.amount === vehicle.currentBid);
-
   return (
     <>
       <section className="panel panel--bid">
         <span className="bid__price-label">
-          {hasBids ? (
-            <>
-              Current bid ·{" "}
-              <span
-                className={
-                  isUsersCurrentBid ? "bid-owner bid-owner--yours" : "bid-owner"
-                }
-              >
-                {isUsersCurrentBid ? "Yours" : "Another bidder"}
-              </span>
-            </>
-          ) : (
-            "Starting bid"
-          )}
+          <BidPriceLabel vehicle={vehicle} userBids={history} />
         </span>
         <p className="bid__price numeric">{formatCurrency(vehicle.effectivePrice)}</p>
 

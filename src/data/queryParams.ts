@@ -37,8 +37,6 @@ const PARAM = {
   titleStatuses: "title",
   provinces: "prov",
   statuses: "status",
-  yearMin: "year_min",
-  yearMax: "year_max",
   priceMin: "price_min",
   priceMax: "price_max",
   odometerMax: "odo_max",
@@ -104,8 +102,6 @@ export function parseQuery(params: URLSearchParams): Query {
     titleStatuses: readEnumList(params, PARAM.titleStatuses, TITLE_STATUSES),
     provinces: readList(params, PARAM.provinces),
     statuses: readEnumList(params, PARAM.statuses, AUCTION_STATUSES),
-    yearMin: readNumber(params, PARAM.yearMin),
-    yearMax: readNumber(params, PARAM.yearMax),
     priceMin: readNumber(params, PARAM.priceMin),
     priceMax: readNumber(params, PARAM.priceMax),
     odometerMax: readNumber(params, PARAM.odometerMax),
@@ -144,8 +140,6 @@ export function serializeQuery(query: Query): URLSearchParams {
   }
 
   const numberKeys = [
-    "yearMin",
-    "yearMax",
     "priceMin",
     "priceMax",
     "odometerMax",

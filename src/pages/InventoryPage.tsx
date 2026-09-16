@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useState } from "react";
 import { ActiveFilters } from "../components/ActiveFilters";
 import { BidModal } from "../components/BidModal";
 import { FilterPanel } from "../components/FilterPanel";
@@ -8,10 +8,12 @@ import { CloseIcon, SlidersIcon } from "../components/icons";
 import {
   SORT_KEYS,
   SORT_LABELS,
+  countActiveFilters,
   isFilterActive,
   useInventory,
   type SortKey,
 } from "../data";
+import { useDismissibleOverlay } from "../hooks/useDismissibleOverlay";
 
 /**
  * The buyer's main view: browse, search, filter, and sort the lane.
@@ -26,7 +28,7 @@ export function InventoryPage() {
   const [bidVehicleId, setBidVehicleId] = useState<string | null>(null);
   const closeBidModal = useCallback(() => setBidVehicleId(null), []);
 
-  const activeCount = countActiveFilters(inventory);
+  const activeCount = countActiveFilters(inventory.query);
 
   return (
     <>
@@ -165,19 +167,7 @@ function FilterDrawer({
   inventory: ReturnType<typeof useInventory>;
   onClose: () => void;
 }) {
-  useEffect(() => {
-    const onKeyDown = (event: KeyboardEvent) => event.key === "Escape" && onClose();
-    document.addEventListener("keydown", onKeyDown);
-
-    // Stop the page behind the drawer from scrolling with it.
-    const { overflow } = document.body.style;
-    document.body.style.overflow = "hidden";
-
-    return () => {
-      document.removeEventListener("keydown", onKeyDown);
-      document.body.style.overflow = overflow;
-    };
-  }, [onClose]);
+  useDismissibleOverlay(onClose);
 
   return (
     <>
@@ -207,31 +197,3 @@ function FilterDrawer({
   );
 }
 
-/** Chip count for the mobile trigger badge. */
-function countActiveFilters({ query }: ReturnType<typeof useInventory>): number {
-  const { filters } = query;
-  const listTotal = [
-    filters.makes,
-    filters.models,
-    filters.bodyStyles,
-    filters.fuelTypes,
-    filters.drivetrains,
-    filters.transmissions,
-    filters.titleStatuses,
-    filters.provinces,
-    filters.statuses,
-  ].reduce((total, list) => total + list.length, 0);
-
-  const scalars = [
-    filters.yearMin,
-    filters.yearMax,
-    filters.priceMin,
-    filters.priceMax,
-    filters.odometerMax,
-    filters.gradeMin,
-  ].filter((value) => value !== null).length;
-
-  const toggles = Number(filters.buyNowOnly) + Number(filters.noReserveOnly);
-
-  return listTotal + scalars + toggles;
-}

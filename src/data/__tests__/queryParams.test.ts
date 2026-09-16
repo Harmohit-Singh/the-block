@@ -43,7 +43,6 @@ describe("parseQuery", () => {
         titleStatuses: ["clean"],
         provinces: ["Ontario"],
         statuses: ["live"],
-        yearMin: 2020,
         priceMax: 30_000,
         gradeMin: 3.5,
         buyNowOnly: true,
