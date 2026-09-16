@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import type { Vehicle } from "../data";
+import { useBidHistory, type Vehicle } from "../data";
 import { formatCurrency, formatOdometer } from "../lib/format";
 import {
   AuctionCountdown,
@@ -22,15 +22,24 @@ import { GaugeIcon, MapPinIcon } from "./icons";
 export function VehicleCard({
   vehicle,
   eagerImage = false,
+  onBid,
 }: {
   vehicle: Vehicle;
   eagerImage?: boolean;
+  onBid: () => void;
 }) {
   const hasBids = vehicle.currentBid !== null;
+  const userBids = useBidHistory(vehicle.id);
+  const isUsersCurrentBid =
+    hasBids && userBids.some((bid) => bid.amount === vehicle.currentBid);
 
   return (
-    <li>
-      <Link to={`/vehicles/${vehicle.id}`} className="card" aria-label={vehicle.displayName}>
+    <li className="card">
+      <Link
+        to={`/vehicles/${vehicle.id}`}
+        className="card__link"
+        aria-label={`View ${vehicle.displayName}`}
+      >
         <div className="card__media">
           <VehicleImage src={vehicle.images[0]} alt={vehicle.displayName} eager={eagerImage} />
           <div className="card__badges">
@@ -71,7 +80,9 @@ export function VehicleCard({
               {/* A lot with no bids is quoting an asking price, not a market
                   price. Labelling them differently keeps that honest. */}
               <span className="card__price-label">
-                {hasBids ? "Current bid" : "Starting bid"}
+                {hasBids
+                  ? `Current bid · ${isUsersCurrentBid ? "Yours" : "Another bidder"}`
+                  : "Starting bid"}
               </span>
               <span className="card__price-value numeric">
                 {formatCurrency(vehicle.effectivePrice)}
@@ -85,6 +96,11 @@ export function VehicleCard({
           </div>
         </div>
       </Link>
+      <div className="card__action">
+        <button type="button" className="btn btn--accent btn--block" onClick={onBid}>
+          {vehicle.status === "ended" ? "View bidding" : "Bid now"}
+        </button>
+      </div>
     </li>
   );
 }

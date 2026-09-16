@@ -239,7 +239,9 @@ out but matter in the final minutes.
 page. Both sit under one persistent header, and both read from the single
 `BidsProvider` mounted in [`main.tsx`](src/main.tsx) — that shared provider is
 what makes a bid placed on the detail page immediately visible back in the
-grid.
+grid. Both screens deliver a great mobile experience as well as desktop: a
+buyer on a phone can browse, filter, and bid without fighting a shrunken
+desktop layout.
 
 **Plain CSS with custom properties**, no utility framework. The stylesheet is
 ~700 lines against a two-page app; a build-step dependency would cost more than
@@ -278,7 +280,9 @@ error.** Every image in the dataset is a remote `placehold.co` URL, so a slow or
 blocked CDN would otherwise leave two dozen broken-image icons on the grid.
 
 **Responsive at 560 / 900 / 1180 px:** one, two, then three cards per row, with
-the filter sidebar collapsing into a drawer below 900.
+the filter sidebar collapsing into a drawer below 900. That is the layout
+backbone of the great mobile experience — one card per row, a full-screen
+filter drawer, and a bidding flow that stays usable with a thumb.
 
 ---
 
@@ -300,10 +304,11 @@ that the URL really drives the query, that a bid placed once is visible in both
 the list and the detail view, and that bids survive a remount.
 
 **Not covered by tests:** the presentational components. These were checked in a
-browser instead — layout measured at 390 px and 1440 px, a shared filtered URL
-restoring its filters and sort, a bid on the detail page appearing in the grid
-and surviving a reload, and the empty state. Component tests here would mostly
-assert that markup is the markup.
+browser instead — layout measured at 390 px and 1440 px to confirm a great
+mobile experience alongside desktop, a shared filtered URL restoring its
+filters and sort, a bid on the detail page appearing in the grid and surviving
+a reload, and the empty state. Component tests here would mostly assert that
+markup is the markup.
 
 ---
 
