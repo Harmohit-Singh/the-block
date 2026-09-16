@@ -158,6 +158,24 @@ img {
   color: var(--accent);
 }
 
+.header__search {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: min(100%, 360px);
+  height: 36px;
+  padding: 0 12px;
+  border: 1px solid var(--ink-600);
+  border-radius: var(--radius);
+  background: var(--ink-800);
+  color: var(--ink-300);
+  font-size: 13px;
+}
+
+.header__search svg {
+  flex-shrink: 0;
+}
+
 .header__count {
   display: none;
   margin-left: auto;
@@ -191,6 +209,14 @@ img {
     gap: 28px;
     padding: 28px;
     align-items: start;
+  }
+
+  .page--filters-collapsed {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .page--filters-collapsed .filters--sidebar {
+    display: none;
   }
 }
 
@@ -379,12 +405,6 @@ img {
   font-weight: 700;
 }
 
-@media (min-width: 900px) {
-  .filters-trigger {
-    display: none;
-  }
-}
-
 .drawer-backdrop {
   position: fixed;
   inset: 0;
@@ -447,13 +467,14 @@ img {
 }
 
 .toolbar__count {
-  font-size: 14px;
-  color: var(--ink-400);
+  font-size: clamp(24px, 3vw, 32px);
+  font-weight: 800;
+  line-height: 1.1;
+  color: var(--ink-900);
 }
 
 .toolbar__count strong {
-  color: var(--ink-900);
-  font-size: 16px;
+  font-size: 1em;
 }
 
 .toolbar__spacer {
@@ -553,10 +574,27 @@ img {
     border-color 150ms ease;
 }
 
+.card__link {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+}
+
 .card:hover {
   border-color: var(--ink-200);
   box-shadow: var(--shadow);
   transform: translateY(-2px);
+}
+
+.card__action {
+  display: none;
+  padding: 0 14px 14px;
+}
+
+@media (min-width: 900px) {
+  .card__action {
+    display: block;
+  }
 }
 
 .card__media {
@@ -941,7 +979,11 @@ img {
 .detail__layout {
   display: grid;
   gap: 24px;
-  grid-template-columns: 1fr;
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.detail__layout > * {
+  min-width: 0;
 }
 
 @media (min-width: 980px) {
@@ -980,7 +1022,8 @@ img {
 
 .gallery__main {
   position: relative;
-  aspect-ratio: 4 / 3;
+  height: min(28vw, 260px);
+  min-height: 200px;
   background: var(--ink-100);
   border-radius: var(--radius-lg);
   overflow: hidden;
@@ -989,7 +1032,7 @@ img {
 .gallery__main img {
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  object-fit: contain;
 }
 
 .gallery__thumbs {
@@ -1037,10 +1080,28 @@ img {
   margin-bottom: 12px;
 }
 
+.detail__bid-rail {
+  position: sticky;
+  bottom: 0;
+  z-index: 20;
+  max-height: calc(100dvh - var(--header-height) - 12px);
+  margin: 0 -20px -20px;
+  padding: 12px 20px 20px;
+  overflow-y: auto;
+  background: linear-gradient(to bottom, transparent, var(--paper) 12px);
+}
+
+.detail__bid-rail .panel:last-child {
+  margin-bottom: 0;
+}
+
 @media (min-width: 980px) {
-  .panel--bid {
-    position: sticky;
+  .detail__bid-rail {
     top: calc(var(--header-height) + 28px);
+    bottom: auto;
+    margin: 0;
+    padding: 0;
+    background: none;
   }
 }
 
@@ -1102,6 +1163,7 @@ img {
 .bid__input-wrap {
   position: relative;
   flex: 1;
+  min-width: 0;
 }
 
 .bid__input-wrap span {
@@ -1195,6 +1257,71 @@ img {
 .history__time {
   font-size: 12px;
   color: var(--ink-400);
+}
+
+/* ------------------------------------------------------------ bid modal */
+
+.bid-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+}
+
+.bid-modal__backdrop {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  border: 0;
+  background: rgb(15 17 21 / 58%);
+}
+
+.bid-modal__dialog {
+  position: relative;
+  width: min(440px, 100%);
+  max-height: calc(100dvh - 48px);
+  overflow: hidden;
+  background: var(--paper);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+}
+
+.bid-modal__head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 16px 18px;
+  background: var(--white);
+  border-bottom: 1px solid var(--ink-100);
+}
+
+.bid-modal__head h2 {
+  margin-top: 2px;
+  font-size: 17px;
+  line-height: 1.3;
+}
+
+.bid-modal__eyebrow {
+  color: var(--ink-400);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.bid-modal__body {
+  max-height: calc(100dvh - 132px);
+  padding: 18px;
+  overflow-y: auto;
+}
+
+.bid-modal__body .panel:last-child {
+  margin-bottom: 0;
 }
 
 .specs {

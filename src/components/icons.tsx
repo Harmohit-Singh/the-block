@@ -69,6 +69,15 @@ export function SlidersIcon(props: IconProps) {
   );
 }
 
+export function SearchIcon(props: IconProps) {
+  return (
+    <svg {...svgProps(props)}>
+      <circle cx="11" cy="11" r="7" />
+      <path d="m20 20-4-4" />
+    </svg>
+  );
+}
+
 export function GaugeIcon(props: IconProps) {
   return (
     <svg {...svgProps(props)}>

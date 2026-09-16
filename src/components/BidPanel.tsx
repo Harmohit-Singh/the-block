@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useId, useState } from "react";
 import {
   minimumBid,
   useBidHistory,
@@ -22,6 +22,7 @@ type BidMode = "one-off" | "max";
 export function BidPanel({ vehicle }: { vehicle: Vehicle }) {
   const { placeBid, placeMaxBid } = useBids();
   const history = useBidHistory(vehicle.id);
+  const amountId = useId();
 
   const minimum = minimumBid(vehicle);
   const [mode, setMode] = useState<BidMode>("one-off");
@@ -60,12 +61,16 @@ export function BidPanel({ vehicle }: { vehicle: Vehicle }) {
   };
 
   const hasBids = vehicle.currentBid !== null;
+  const isUsersCurrentBid =
+    hasBids && history.some((bid) => bid.amount === vehicle.currentBid);
 
   return (
     <>
       <section className="panel panel--bid">
         <span className="bid__price-label">
-          {hasBids ? "Current bid" : "Starting bid"}
+          {hasBids
+            ? `Current bid · ${isUsersCurrentBid ? "Yours" : "Another bidder"}`
+            : "Starting bid"}
         </span>
         <p className="bid__price numeric">{formatCurrency(vehicle.effectivePrice)}</p>
 
@@ -117,11 +122,11 @@ export function BidPanel({ vehicle }: { vehicle: Vehicle }) {
             <div className="bid__form">
               <div className="bid__input-wrap">
                 <span>$</span>
-                <label className="sr-only" htmlFor="bid-amount">
+                <label className="sr-only" htmlFor={amountId}>
                   {mode === "max" ? "Maximum bid" : "Bid amount"} in Canadian dollars
                 </label>
                 <input
-                  id="bid-amount"
+                  id={amountId}
                   type="number"
                   inputMode="numeric"
                   step={1}

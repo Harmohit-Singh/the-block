@@ -2,9 +2,9 @@
 
 ## How to Run
 
-**Step 1**: `cd` into the project directory from your terminal
-**Step 2**: run `npm run dev`
-**Step 3**: Open the localpost url in your browser (Google Chrome preferred). `http://localhost:5173/` is the default
+- **Step 1**: `cd` into the project directory from your terminal
+- **Step 2**: run `npm run dev`
+- **Step 3**: Open the localpost url in your browser (Google Chrome preferred). `http://localhost:5173/` is the default
 
 ## Time Spent
 
@@ -40,7 +40,27 @@ Price, bid rules, and URL-as-query-state are product guesses: effectivePrice is 
 
 ## What I Built
 
-A buyer-side wholesale auction prototype: browse 200 vehicles, filter and sort them, open a lot, and place a bid. Two screens — an inventory grid at `/` and a vehicle detail page at `/vehicles/:id` — sit on a data layer that loads, normalizes, searches, filters, sorts, paginates, and overlays bids.
+### Desktop
+
+**Browse**
+
+![Desktop inventory browse](screenshots/desktop_browse.png)
+
+**Vehicle detail**
+
+![Desktop vehicle detail](screenshots/desktop_details.png)
+
+### Mobile
+
+**Browse**
+
+<img src="screenshots/mobile_browse.png" alt="Mobile inventory browse" width="320" />
+
+**Vehicle detail**
+
+<img src="screenshots/mobile_details.png" alt="Mobile vehicle detail" width="320" />
+
+A buyer-side wholesale auction prototype: browse 200 vehicles, filter and sort them, open a lot, and place a bid. Two screens — an inventory grid at `/` and a vehicle detail page at `/vehicles/:id` — sit on a data layer that loads, normalizes, searches, filters, sorts, paginates, and overlays bids. It delivers a great mobile experience as well as desktop: browsing, filtering, and bidding were designed to work comfortably on a phone, not just squeezed down from a wide layout.
 
 I started with that layer so the UI only consumes a stable query and bid API, then built browse, filters, detail, and bidding on top of it. The dataset is imported and queried in memory (no backend); auction timestamps are rebased so live, upcoming, and closed lots all appear; and the URL is the source of truth for filters so a search is shareable and survives a refresh. Bids are an append-only log in `localStorage`, so a bid on the detail page is immediately visible back in the grid.
 
@@ -64,7 +84,7 @@ The full reasoning is in [ASSUMPTIONS](ASSUMPTIONS.md). The choices that most sh
 
 **Automated.** 105 Vitest tests, all pure-function or hook-level — no component snapshots. Units cover normalization (including the auction-rebase invariants), bid overlay and validation, search, filters, sorting, facet counts, URL round-tripping, and formatting. A jsdom suite covers what units cannot: that the URL actually drives the query, that a bid placed once shows in both the list and the detail view, and that bids survive a remount. `npx tsc --noEmit` is the typecheck.
 
-**Manual.** Presentational components were checked in the browser instead of tested: layout at 390 px and 1440 px, a shared filtered URL restoring its filters and sort, a bid on the detail page appearing in the grid and surviving a reload, and the empty state.
+**Manual.** Presentational components were checked in the browser instead of tested: layout at 390 px and 1440 px (confirming a great mobile experience alongside desktop), a shared filtered URL restoring its filters and sort, a bid on the detail page appearing in the grid and surviving a reload, and the empty state.
 
 `npm test` runs the suite.
 

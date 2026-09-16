@@ -153,9 +153,9 @@ export function VehicleDetailPage() {
           </section>
         </div>
 
-        <div>
+        <aside className="detail__bid-rail" aria-label="Bidding">
           <BidPanel vehicle={vehicle} />
-        </div>
+        </aside>
       </div>
     </div>
   );

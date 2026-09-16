@@ -1,5 +1,6 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { ActiveFilters } from "../components/ActiveFilters";
+import { BidModal } from "../components/BidModal";
 import { FilterPanel } from "../components/FilterPanel";
 import { Pagination } from "../components/Pagination";
 import { VehicleCard } from "../components/VehicleCard";
@@ -21,13 +22,20 @@ import {
 export function InventoryPage() {
   const inventory = useInventory();
   const [drawerOpen, setDrawerOpen] = useState(false);
+  const [desktopFiltersOpen, setDesktopFiltersOpen] = useState(false);
+  const [bidVehicleId, setBidVehicleId] = useState<string | null>(null);
+  const closeBidModal = useCallback(() => setBidVehicleId(null), []);
 
   const activeCount = countActiveFilters(inventory);
 
   return (
     <>
-      <div className="page">
-        <aside className="filters filters--sidebar" aria-label="Filters">
+      <div className={`page${desktopFiltersOpen ? "" : " page--filters-collapsed"}`}>
+        <aside
+          id="desktop-filters"
+          className="filters filters--sidebar"
+          aria-label="Filters"
+        >
           <div className="filters__head">
             <h2>Filters</h2>
             {isFilterActive(inventory.query) ? (
@@ -44,7 +52,15 @@ export function InventoryPage() {
             <button
               type="button"
               className="filters-trigger"
-              onClick={() => setDrawerOpen(true)}
+              aria-controls="desktop-filters"
+              aria-expanded={desktopFiltersOpen}
+              onClick={() => {
+                if (window.matchMedia("(min-width: 900px)").matches) {
+                  setDesktopFiltersOpen((open) => !open);
+                } else {
+                  setDrawerOpen(true);
+                }
+              }}
             >
               <SlidersIcon size={16} />
               Filters
@@ -53,10 +69,10 @@ export function InventoryPage() {
               ) : null}
             </button>
 
-            <p className="toolbar__count" aria-live="polite">
+            <h1 className="toolbar__count" aria-live="polite">
               <strong className="numeric">{inventory.total.toLocaleString("en-CA")}</strong>{" "}
               {inventory.total === 1 ? "vehicle" : "vehicles"}
-            </p>
+            </h1>
 
             <span className="toolbar__spacer" />
 
@@ -91,6 +107,7 @@ export function InventoryPage() {
                     // The first row is above the fold on every breakpoint, so
                     // those images should not wait for the lazy observer.
                     eagerImage={index < 3}
+                    onBid={() => setBidVehicleId(vehicle.id)}
                   />
                 ))}
               </ul>
@@ -110,6 +127,10 @@ export function InventoryPage() {
 
       {drawerOpen ? (
         <FilterDrawer inventory={inventory} onClose={() => setDrawerOpen(false)} />
+      ) : null}
+
+      {bidVehicleId ? (
+        <BidModal vehicleId={bidVehicleId} onClose={closeBidModal} />
       ) : null}
     </>
   );
