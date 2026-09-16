@@ -22,7 +22,7 @@ import {
 export function InventoryPage() {
   const inventory = useInventory();
   const [drawerOpen, setDrawerOpen] = useState(false);
-  const [desktopFiltersOpen, setDesktopFiltersOpen] = useState(false);
+  const [desktopFiltersOpen, setDesktopFiltersOpen] = useState(true);
   const [bidVehicleId, setBidVehicleId] = useState<string | null>(null);
   const closeBidModal = useCallback(() => setBidVehicleId(null), []);
 

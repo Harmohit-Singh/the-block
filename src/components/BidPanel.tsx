@@ -68,9 +68,20 @@ export function BidPanel({ vehicle }: { vehicle: Vehicle }) {
     <>
       <section className="panel panel--bid">
         <span className="bid__price-label">
-          {hasBids
-            ? `Current bid · ${isUsersCurrentBid ? "Yours" : "Another bidder"}`
-            : "Starting bid"}
+          {hasBids ? (
+            <>
+              Current bid ·{" "}
+              <span
+                className={
+                  isUsersCurrentBid ? "bid-owner bid-owner--yours" : "bid-owner"
+                }
+              >
+                {isUsersCurrentBid ? "Yours" : "Another bidder"}
+              </span>
+            </>
+          ) : (
+            "Starting bid"
+          )}
         </span>
         <p className="bid__price numeric">{formatCurrency(vehicle.effectivePrice)}</p>
 
