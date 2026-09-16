@@ -80,9 +80,20 @@ export function VehicleCard({
               {/* A lot with no bids is quoting an asking price, not a market
                   price. Labelling them differently keeps that honest. */}
               <span className="card__price-label">
-                {hasBids
-                  ? `Current bid · ${isUsersCurrentBid ? "Yours" : "Another bidder"}`
-                  : "Starting bid"}
+                {hasBids ? (
+                  <>
+                    Current bid ·{" "}
+                    <span
+                      className={
+                        isUsersCurrentBid ? "bid-owner bid-owner--yours" : "bid-owner"
+                      }
+                    >
+                      {isUsersCurrentBid ? "Yours" : "Another bidder"}
+                    </span>
+                  </>
+                ) : (
+                  "Starting bid"
+                )}
               </span>
               <span className="card__price-value numeric">
                 {formatCurrency(vehicle.effectivePrice)}

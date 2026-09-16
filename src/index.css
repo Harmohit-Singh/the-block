@@ -587,14 +587,7 @@ img {
 }
 
 .card__action {
-  display: none;
   padding: 0 14px 14px;
-}
-
-@media (min-width: 900px) {
-  .card__action {
-    display: block;
-  }
 }
 
 .card__media {
@@ -693,6 +686,18 @@ img {
   text-transform: uppercase;
   color: var(--ink-400);
   margin-bottom: 2px;
+}
+
+/* High-bidder mark: green chip so "Yours" is scannable in a dense grid. */
+.bid-owner--yours {
+  display: inline-flex;
+  align-items: center;
+  color: #14532d;
+  background: var(--live-soft);
+  font-weight: 800;
+  padding: 0 6px;
+  border-radius: var(--radius-sm);
+  letter-spacing: 0.04em;
 }
 
 .card__price-value {
@@ -1106,6 +1111,10 @@ img {
 }
 
 .bid__price-label {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
   font-size: 12px;
   font-weight: 600;
   letter-spacing: 0.05em;
